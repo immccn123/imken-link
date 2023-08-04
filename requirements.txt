@@ -1,0 +1,9 @@
+peewee
+fastapi
+jinja2
+uvicorn[standard]
+python-dotenv
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+psycopg2
