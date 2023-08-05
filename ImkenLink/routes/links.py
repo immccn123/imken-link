@@ -54,7 +54,7 @@ async def add_link(
 @router.get("/link/list")
 async def get_link_list(
     authorization: str = Header(), is_own: int = Query(), page: int = Query()
-):# -> list[LinkInterface]:
+) -> list[LinkInterface]:
     per_page = 50
     user = get_user(authorization)
     if (
