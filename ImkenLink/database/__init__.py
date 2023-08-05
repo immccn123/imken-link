@@ -1,6 +1,6 @@
 import os
 
-from peewee import Model, CharField, PostgresqlDatabase, IntegerField
+from peewee import Model, CharField, PostgresqlDatabase, IntegerField, ForeignKeyField
 from ..tools.rand import random_str
 
 PGSQL_URL = os.getenv("PGSQL_URL")
@@ -28,7 +28,7 @@ class Setting(Model):
 
 
 class Link(Model):
-    owner = User()
+    owner = ForeignKeyField(User)
     target_link = CharField()
     shorten_link = CharField(unique=True)
 
