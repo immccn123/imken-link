@@ -6,6 +6,10 @@ from ..database import User, Link
 from ..tools.crypt import get_token_data
 from ..tools.rand import random_str
 
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Could not validate credentials",
+)
 
 permisson_exception = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
@@ -26,7 +30,11 @@ async def add_link(
     target_link: str = Form(),
     shorten_link: str | None = Form(default=None),
 ) -> str:
-    user = User.get_by_id(get_token_data(authorization.split(" ")[1]).user_id)
+    try:
+        user_id = get_token_data(authorization.split(" ")[1]).user_id
+    except IndexError:
+        raise credentials_exception
+    user = User.get_by_id(user_id)
     if user.permission & permission.Normal.CUSTOMIZE_LINK and shorten_link is not None:
         raise permisson_exception
     if shorten_link is None:

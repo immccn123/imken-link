@@ -40,7 +40,10 @@ async def change_password(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate old password",
     )
-    user_id = get_token_data(authorization.split(" ")[1]).user_id
+    try:
+        user_id = get_token_data(authorization.split(" ")[1]).user_id
+    except IndexError:
+        raise credentials_exception
     user = User.get_by_id(user_id)
     if not verify_password(old_password, user.password):
         raise credentials_exception
@@ -57,7 +60,10 @@ async def get_user_data(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate old password",
     )
-    user_id = get_token_data(authorization.split(" ")[1]).user_id
+    try:
+        user_id = get_token_data(authorization.split(" ")[1]).user_id
+    except IndexError:
+        raise credentials_exception
     user = User.get_by_id(user_id)
     return UserInterface(id=user.id, username=user.username, permission=user.permission)
 
