@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 
 from ..constants import permission
 from ..database import Setting, User
-from ..interfaces import TokenResponse
+from ..interfaces import TokenResponse, User as UserInterface
 from ..tools.crypt import (
     create_access_token,
     get_password_hash,
@@ -12,11 +12,6 @@ from ..tools.crypt import (
 )
 
 router = APIRouter(prefix="/user")
-
-
-@router.get("/login")
-async def login_page():
-    pass
 
 
 @router.post("/login")
@@ -40,7 +35,7 @@ async def change_password(
     authorization: str = Header(),
     old_password: str = Form(),
     new_password: str = Form(),
-):
+) -> UserInterface:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate old password",
@@ -51,13 +46,26 @@ async def change_password(
         raise credentials_exception
     user.password = get_password_hash(new_password)
     user.save()
-    return {"user_id": user_id}
+    return UserInterface(id=user.id, username=user.username, permission=user.permission)
+
+
+@router.get("/me")
+async def get_user_data(
+    authorization: str = Header(),
+) -> UserInterface:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate old password",
+    )
+    user_id = get_token_data(authorization.split(" ")[1]).user_id
+    user = User.get_by_id(user_id)
+    return UserInterface(id=user.id, username=user.username, permission=user.permission)
 
 
 @router.post("/setup")
 async def setup_create_super_user(
     username: str = Form(), password: str = Form(), setup_key: str = Form()
-) -> RedirectResponse:
+) -> UserInterface:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Setup key is invalid",
@@ -66,7 +74,7 @@ async def setup_create_super_user(
     real_setup_key = Setting.get(key="SETUP_KEY").value
     if setup_key != real_setup_key and real_setup_key != "=":
         raise credentials_exception
-    User.create(
+    user = User.create(
         username=username,
         password=get_password_hash(password),
         permission=permission.ADMIN_PERMISSION,
@@ -74,7 +82,7 @@ async def setup_create_super_user(
     setup_key_obj = Setting.get(key="SETUP_KEY")
     setup_key_obj.value = "="
     setup_key_obj.save()
-    return RedirectResponse("/user/login")
+    return UserInterface(id=user.id, username=user.username, permission=user.permission)
 
 
 @router.get("/getSetupKey")
