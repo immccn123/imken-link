@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Form, Header, HTTPException, status, Path
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 
 from ..constants import permission
 from ..database import User, Link
@@ -18,8 +18,10 @@ permisson_exception = HTTPException(
 
 notfound_exception = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
-    detail="Not Found",
+    detail="Link not found",
 )
+
+web_panel_html = open('static/index.html', encoding='utf-8').read()
 
 router = APIRouter()
 
@@ -50,3 +52,7 @@ async def jump_link(shorten_link: str = Path()):
     except Link.DoesNotExist:
         raise notfound_exception
     return RedirectResponse(link.target_link, status_code=301)
+
+@router.get('/')
+async def web_panel():
+    return HTMLResponse(web_panel_html)

@@ -1,0 +1,1 @@
+Put `dist/` of webpages into this directory (index.html, assets)
