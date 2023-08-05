@@ -14,3 +14,14 @@ class User(BaseModel):
     id: int = 0
     username: str = ""
     permission: int = 0
+
+
+class Link(BaseModel):
+    id: int = 0
+    target_link: str = ""
+    shorten_link: str = ""
+    owner_name: str | None = ""
+
+
+class Operation(BaseModel):
+    status: str = "ok"

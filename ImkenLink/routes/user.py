@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Form, Header, HTTPException, status
-from fastapi.responses import RedirectResponse
 
 from ..constants import permission
 from ..database import Setting, User
-from ..interfaces import TokenResponse, User as UserInterface
+from ..interfaces import TokenResponse
+from ..interfaces import User as UserInterface
 from ..tools.crypt import (
     create_access_token,
     get_password_hash,
     get_token_data,
+    get_user,
     verify_password,
 )
 
@@ -40,11 +41,7 @@ async def change_password(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate old password",
     )
-    try:
-        user_id = get_token_data(authorization.split(" ")[1]).user_id
-    except IndexError:
-        raise credentials_exception
-    user = User.get_by_id(user_id)
+    user = get_user(authorization)
     if not verify_password(old_password, user.password):
         raise credentials_exception
     user.password = get_password_hash(new_password)
@@ -60,11 +57,7 @@ async def get_user_data(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate old password",
     )
-    try:
-        user_id = get_token_data(authorization.split(" ")[1]).user_id
-    except IndexError:
-        raise credentials_exception
-    user = User.get_by_id(user_id)
+    user = get_user(authorization)
     return UserInterface(id=user.id, username=user.username, permission=user.permission)
 
 

@@ -5,6 +5,7 @@ from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from ..interfaces import TokenData
+from ..database import User
 
 # openssl rand -hex 32
 SECRET_KEY = os.getenv(
@@ -51,3 +52,19 @@ def get_token_data(token: str):
     except JWTError:
         raise credentials_exception
     return token_data
+
+
+def get_user(authorization: str) -> User | None:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+    )
+    try:
+        user_id = get_token_data(authorization.split(" ")[1]).user_id
+    except IndexError:
+        raise credentials_exception
+    try:
+        user = User.get_by_id(user_id)
+        return user
+    except User.DoesNotExist:
+        return None
