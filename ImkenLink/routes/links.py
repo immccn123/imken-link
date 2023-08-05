@@ -79,7 +79,7 @@ async def get_link_list(
 
 
 @router.get("/link/count")
-async def get_link_count(authorization: str = Header(), is_own: int = Query()) -> int:
+async def get_link_count(authorization: str = Header(), is_own: int = Query(default=0)) -> int:
     user = get_user(authorization)
     if (
         not has_permission(user.permission, permission.Admin.MANAGE_LINK)
