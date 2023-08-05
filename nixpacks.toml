@@ -1,5 +1,7 @@
+providers = ["...", "nodejs"]
+
 [phases.setup]
-nixPkgs = ['...', 'git', 'nodejs_18', 'nodePackages.pnpm']
+nixPkgs = ['...', 'git']
 
 [phases.build]
 cmds = [
