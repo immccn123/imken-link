@@ -9,7 +9,7 @@ export default async function NotFound() {
 				<Grid.Column width={4}>
 					<Segment>
 						<h3>404 | Sorry, we cannot find that page.</h3>
-						{/* eslint-ignore-next-line @next/next/no-img-element */}
+						{/* eslint-disable-next-line @next/next/no-img-element */}
 						<img
 							style={{ width: "100%" }}
 							src="https://http.cat/404"

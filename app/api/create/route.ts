@@ -6,13 +6,13 @@ import { prisma } from "@/app/prisma";
 import { Prisma } from "@prisma/client";
 
 import "@/utils/bigint";
-import { validateSessionOrApiKey } from "@/utils/auth/server";
+import { validateSession } from "@/utils/auth/server";
 
 export async function POST(request: NextRequest) {
 	try {
-		validateSessionOrApiKey(request.headers.get("api-key"));
+		validateSession(request.headers.get("api-key"));
 	} catch (e) {
-		return e;
+		return e as Response;
 	}
 
 	const data = await request.json();

@@ -1,13 +1,13 @@
 import { NextRequest } from "next/server";
 import { removeLinkSchema } from "@/model/apiCreate";
-import { validateSessionOrApiKey } from "@/utils/auth/server";
+import { validateSession } from "@/utils/auth/server";
 import { prisma } from "@/app/prisma";
 
 export async function DELETE(request: NextRequest) {
 	try {
-		validateSessionOrApiKey(request.headers.get("api-key"));
+		validateSession(request.headers.get("api-key"));
 	} catch (e) {
-		return e;
+		return e as Response;
 	}
 
 	const data = await request.json();

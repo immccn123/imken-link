@@ -1,15 +1,14 @@
-import { validateSessionOrApiKey } from "@/utils/auth/server";
-import { NextRequest } from "next/server";
+import { tryValidateSession, validateSession } from "@/utils/auth/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import "@/utils/bigint";
 import { tryParseInt } from "@/utils";
 import { prisma } from "@/app/prisma";
 
 export async function GET(request: NextRequest) {
-	try {
-		validateSessionOrApiKey(request.headers.get("api-key"));
-	} catch (e) {
-		return e;
+	{
+		const response = tryValidateSession(request.headers.get("api-key"));
+		if (response) return response;
 	}
 
 	const search = new URL(request.url).searchParams;
@@ -29,5 +28,5 @@ export async function GET(request: NextRequest) {
 		orderBy: { createdAt: "desc" },
 	});
 
-	return Response.json(result);
+	return NextResponse.json(result);
 }
