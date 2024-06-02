@@ -1,3 +1,5 @@
+"use server";
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOption";
 import { prisma } from "@/app/prisma";
 import { PERMISSION_TABLE } from "@/constant/permission";
@@ -44,11 +46,7 @@ export async function validateSession(apiKey?: string | null) {
  *
  * @example
  * ```ts
- * try {
- *   await validateSessionOrApiKey(apiKey);
- * } catch (e) {
- *   return e as Response;
- * }
+ * await validateSessionOrApiKey(apiKey);
  * ```
  */
 export async function tryValidateSession(apiKey?: string | null) {

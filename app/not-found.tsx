@@ -1,6 +1,6 @@
 "use server";
 
-import { Button, Grid, Segment } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
 
 export default async function NotFound() {
 	return (

@@ -7,7 +7,7 @@ import { prisma } from "@/app/prisma";
 
 export async function GET(request: NextRequest) {
 	{
-		const response = tryValidateSession(request.headers.get("api-key"));
+		const response = await tryValidateSession(request.headers.get("api-key"));
 		if (response) return response;
 	}
 
