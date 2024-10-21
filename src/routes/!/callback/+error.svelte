@@ -1,34 +1,33 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import { Container, Text, Title, Center, Button, Space } from "@svelteuidev/core";
 </script>
 
-<Space h="xs" />
-
-<Container>
-	<Center>
-		<Title order={1}>{$page.status}</Title>
+<div class="container mx-auto mt-2">
+	<div class="flex">
+		<div class="flex-grow"></div>
+		<h1 class="text-3xl inline">{$page.status}</h1>
 		<span style="width: 10px;" />
 		<span style="font-size: x-large"><strong>|</strong></span>
 		<span style="width: 10px;" />
 		{#if $page.status === 403}
-			<Text>
+			<span class="leading-none">
 				这个账户似乎不被允许登录……
 				<br />
 				This account does not appear to be allowed to log in...
-			</Text>
+			</span>
 		{:else}
-			<Text>
+			<span class="leading-none">
 				出现了一些无法恢复的错误……
 				<br />
 				Some unrecoverable errors occurred...
-			</Text>
+			</span>
 		{/if}
-	</Center>
-	<Center>
-		<p>
+		<div class="flex-grow"></div>
+	</div>
+	<div class="text-center">
+		<span>
 			{$page.error?.message}<br />
-			<Button href="/!/login">Back to Login</Button>
-		</p>
-	</Center>
-</Container>
+			<a class="btn" href="/!/login">Back to Login</a>
+		</span>
+	</div>
+</div>

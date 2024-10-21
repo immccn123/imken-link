@@ -1,21 +1,12 @@
 <script lang="ts">
 	import type { Link } from "$lib/db/schema.js";
 	import type { CreateLink, GetLink, RemoveLink } from "$lib/api/schema.js";
-	import {
-		Badge,
-		Button,
-		Checkbox,
-		Container,
-		Grid,
-		Input,
-		InputWrapper,
-		SimpleGrid,
-		Space,
-		Title,
-		Anchor,
-	} from "@svelteuidev/core";
+	import MdiTrash from "~icons/mdi/trash";
+	import MdiContentCopy from "~icons/mdi/content-copy";
+
 	import { nanoid } from "nanoid";
 	import { linkFlag } from "$lib/constants.js";
+	import { onMount } from "svelte";
 
 	export let data;
 
@@ -46,7 +37,9 @@
 			.finally(() => (isLinkLoading = false));
 	}
 
-	$: refreshLinks();
+	onMount(() => {
+		refreshLinks();
+	});
 
 	function createLink() {
 		if (slug === "") slug = nanoid(8);
@@ -80,78 +73,81 @@
 	}
 </script>
 
-<Space h="lg" />
+<div class="container mx-auto px-2 mt-5">
+	<h1 class="text-3xl">Dashboard</h1>
 
-<Container>
-	<Title order={1}>Dashboard</Title>
-	<Space h="lg" />
+	<div class="mt-2">
+		<span class="badge">GitHub {data.session.userId}</span>
+		<span class="badge">
+			Catpcha {data.session.isHuman ? "passed" : "not passed"}
+		</span>
+	</div>
 
-	<Badge>GitHub {data.session.userId}</Badge>
+	<h2 class="text-2xl mt-2">Create Link</h2>
 
-	{#if data.session.isHuman}
-		<Badge>CAPTCHA Passed</Badge>
-	{:else}
-		<Badge color="red">CAPTCHA Not Passed</Badge>
-	{/if}
+	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-2 w-full">
+		<div>
+			<div class="label">
+				<span class="label-text">Slug</span>
+			</div>
+			<input
+				type="text"
+				bind:value={slug}
+				placeholder="Leave blank to generate one"
+				class="input input-bordered w-full"
+				disabled={isSubmitting}
+			/>
+		</div>
 
-	<Space h="sm" />
+		<div>
+			<div class="label">
+				<span class="label-text">Destination</span>
+			</div>
+			<input
+				type="text"
+				bind:value={destination}
+				placeholder="https://google.com"
+				class="input input-bordered w-full"
+				disabled={isSubmitting}
+			/>
+		</div>
 
-	<Title order={2}>Create Link</Title>
-
-	<Space h="xs" />
-
-	<Grid cols={2}>
-		<Grid.Col xs={2} sm={1}>
-			<InputWrapper label="Slug">
-				<Input
-					bind:value={slug}
+		<div class="form-control">
+			<label class="label cursor-pointer">
+				<span class="label-text">CAPTCHA required</span>
+				<input
+					type="checkbox"
 					disabled={isSubmitting}
-					placeholder="Leave blank to generate one"
-				/>
-			</InputWrapper>
-		</Grid.Col>
-		<Grid.Col xs={2} sm={1}>
-			<InputWrapper label="Destination" required>
-				<Input
-					bind:value={destination}
-					disabled={isSubmitting}
-					placeholder="Must be an URL"
-				/>
-			</InputWrapper>
-		</Grid.Col>
-		<Grid.Col span={2}>
-			<SimpleGrid cols={2}>
-				<Checkbox
 					bind:checked={captchaRequired}
-					disabled={isSubmitting}
-					label="CAPTCHA required"
-					size="sm"
+					class="checkbox"
 				/>
-				<Checkbox
+			</label>
+			<label class="label cursor-pointer">
+				<span class="label-text">Copy required</span>
+				<input
+					type="checkbox"
+					disabled={isSubmitting}
 					bind:checked={copyRequired}
-					disabled={isSubmitting}
-					label="Copy required"
-					size="sm"
+					class="checkbox"
 				/>
-			</SimpleGrid>
-		</Grid.Col>
-	</Grid>
+			</label>
+		</div>
+	</div>
 
-	<Space h="lg" />
-
-	<Button fullSize loading={isSubmitting} on:click={createLink}>Submit</Button
+	<button
+		class="btn w-full btn-sm"
+		disabled={isSubmitting}
+		on:click={createLink}
 	>
-</Container>
+		Submit
+	</button>
 
-<Space h="lg" />
+	<h2 class="text-2xl mt-2">All Links</h2>
 
-<Container>
-	<Title order={2}>All Links</Title>
-	<Space h="xs" />
 	{#if isLinkLoading}
 		Loading...
 	{:else}
-		<table>
+		<table class="table">
 			<thead>
 				<tr>
 					<th scope="col">Id</th>
@@ -166,71 +162,45 @@
 					<tr>
 						<td>#{id}</td>
 						<td>
-							<Anchor href={`/${slug}`}>{slug}</Anchor>
+							<a class="link link-primary" href={`/${slug}`}>
+								{slug}
+							</a>
 						</td>
 						<td>
-							<Anchor href={destination}>{destination}</Anchor>
+							<a class="link link-primary" href={destination}>
+								{destination}
+							</a>
 						</td>
 						<td>
 							{#if flag & linkFlag.captchaRequired}
-								<Badge size="xs" color="yellow">Captcha</Badge>
+								<span class="badge badge-accent">Captcha</span>
 							{/if}
 							{#if flag & linkFlag.copyRequired}
-								<Badge size="xs">Copy</Badge>
+								<span class="badge badge-neutral">Copy</span>
 							{/if}
 						</td>
-						<td>
-							<Button
+						<td class="join">
+							<button
 								on:click={removeLinkMaker(id)}
-								size="xs"
-								color="red"
 								disabled={isSubmitting}
+								class="btn btn-sm btn-error join-item"
 							>
-								Delete
-							</Button>
+								<MdiTrash />
+							</button>
 
-							<Button
+							<button
 								on:click={() =>
 									navigator.clipboard.writeText(
 										`${location.origin}/${slug}`,
 									)}
-								size="xs"
+								class="btn btn-sm join-item"
 							>
-								Copy
-							</Button>
+								<MdiContentCopy />
+							</button>
 						</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 	{/if}
-</Container>
-
-<style>
-	/* https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/table */
-	table {
-		border-collapse: collapse;
-		border: 2px solid rgb(140 140 140);
-		font-family: sans-serif;
-		font-size: 0.8rem;
-		letter-spacing: 1px;
-	}
-
-	thead {
-		background-color: rgb(228 240 245);
-	}
-
-	th,
-	td {
-		border: 1px solid rgb(160 160 160);
-		padding: 8px 10px;
-	}
-
-	td:last-of-type {
-		text-align: center;
-	}
-
-	tbody > tr:nth-of-type(even) {
-		background-color: rgb(237 238 242);
-	}
-</style>
+</div>

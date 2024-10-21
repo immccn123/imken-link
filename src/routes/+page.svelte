@@ -1,15 +1,8 @@
-<script lang="ts">
-	import { Title, Button, Space, Paper } from "@svelteuidev/core";
-</script>
-
-<div
-	style="display: flex; align-items: center; width: 100vw; height: 100vh; justify-content: center;"
->
-	<Paper style="text-align: center">
-		<Title style="text-align: center" order={1}>Imken.Link</Title>
-		<Space h="xl" />
-		<Button style="text-align: center" href="/!/login" fullSize
-			>Login</Button
-		>
-	</Paper>
+<div class="hero bg-base-200 min-h-screen">
+	<div class="hero-content flex-col lg:flex-row">
+		<div class="text-center">
+			<h1 class="text-5xl font-bold">Imken.Link</h1>
+			<p>Imken 的短链接站点！</p>
+		</div>
+	</div>
 </div>
