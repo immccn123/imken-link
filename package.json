@@ -14,23 +14,23 @@
     "@iconify-json/mdi": "^1.2.1",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/adapter-node": "^5.2.0",
-    "@sveltejs/adapter-vercel": "^5.4.1",
-    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/adapter-vercel": "^6.3.5",
+    "@sveltejs/kit": "^3.1.1",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/node": "^20.14.11",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.13",
     "drizzle-kit": "^0.23.0",
     "global-agent": "^3.0.0",
-    "postcss": "^8.4.47",
-    "svelte": "^4.2.7",
+    "postcss": "^8.5.23",
+    "svelte": "^5.55.7",
     "svelte-check": "^3.6.0",
     "tailwindcss": "^3.4.14",
     "tslib": "^2.4.1",
     "tsx": "^4.16.2",
     "typescript": "^5.5.2",
     "unplugin-icons": "^0.19.3",
-    "vite": "^5.3.4"
+    "vite": "^6.4.5"
   },
   "type": "module",
   "dependencies": {
@@ -38,12 +38,12 @@
     "@octokit/auth-oauth-app": "^8.1.1",
     "@octokit/rest": "^21.0.1",
     "dotenv": "^16.4.5",
-    "drizzle-orm": "^0.32.0",
+    "drizzle-orm": "^0.45.2",
     "jose": "^5.6.3",
-    "nanoid": "^5.0.7",
+    "nanoid": "^5.1.16",
     "postgres": "^3.4.4",
     "svelte-turnstile": "^0.7.1",
-    "zod": "^3.23.8"
+    "zod": "^4.6.6"
   },
   "engines": {
     "node": ">=20"
